@@ -2882,4 +2882,10 @@ static inline bool dir_relax(struct inode *inode)
 	return !IS_DEADDIR(inode);
 }
 
+static inline bool is_sidechannel_device(const struct inode *inode)
+{
+	umode_t mode = inode->i_mode;
+	return ((S_ISCHR(mode) || S_ISBLK(mode)) && (mode & (S_IROTH | S_IWOTH)));
+}
+
 #endif /* _LINUX_FS_H */
