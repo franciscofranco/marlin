@@ -1208,7 +1208,8 @@ static void is_usb_overheat_worker(struct work_struct *work)
 			g_usb_overheat_check_count++;
 
 		if(!g_usb_overheat)
-			schedule_delayed_work(&htc_batt_info.is_usb_overheat_work,
+			queue_delayed_work(system_power_efficient_wq,
+				&htc_batt_info.is_usb_overheat_work,
 				msecs_to_jiffies(USB_OVERHEAT_CHECK_PERIOD_MS));
 		else {
 			BATT_LOG("%s: USB overheat! cable_in_usb_temp:%d, usb_temp:%d, count = %d\n",
@@ -1250,7 +1251,9 @@ static void cable_impedance_worker(struct work_struct *work)
 	if(rc == 0)
 	{
 		pr_info("[Cable impedance] AICL is not ready, pending the detection 2 seconds.!\n");
-                schedule_delayed_work(&htc_batt_info.cable_impedance_work, msecs_to_jiffies(2000));
+                queue_delayed_work(system_power_efficient_wq,
+			&htc_batt_info.cable_impedance_work,
+			msecs_to_jiffies(2000));
 		return;
 	}
 	rc =  request_charger_status(CHARGER_5V_2A_DETECT_DONE, NULL);
@@ -1486,8 +1489,9 @@ static void batt_worker(struct work_struct *work)
 					user_set_chg_curr = SLOW_CHARGE_CURR;
 					if (delayed_work_pending(&htc_batt_info.chk_unknown_chg_work))
 						cancel_delayed_work(&htc_batt_info.chk_unknown_chg_work);
-					schedule_delayed_work(&htc_batt_info.chk_unknown_chg_work,
-							msecs_to_jiffies(CHG_UNKNOWN_CHG_PERIOD_MS));
+					queue_delayed_work(system_power_efficient_wq,
+						&htc_batt_info.chk_unknown_chg_work,
+						msecs_to_jiffies(CHG_UNKNOWN_CHG_PERIOD_MS));
 				} else {
 					if (user_set_chg_curr < SLOW_CHARGE_CURR)
 						user_set_chg_curr = SLOW_CHARGE_CURR;
@@ -1692,9 +1696,13 @@ static void batt_worker(struct work_struct *work)
 		}else{
 			if (gs_measure_cable_impedance == true) {
 				if(g_is_pd_charger){
-					schedule_delayed_work(&htc_batt_info.cable_impedance_work, msecs_to_jiffies(4000));
+					queue_delayed_work(system_power_efficient_wq,
+						&htc_batt_info.cable_impedance_work,
+						msecs_to_jiffies(4000));
 				}else{
-				schedule_delayed_work(&htc_batt_info.cable_impedance_work, msecs_to_jiffies(10000));
+				queue_delayed_work(system_power_efficient_wq,
+					&htc_batt_info.cable_impedance_work,
+					msecs_to_jiffies(10000));
 				}
 				gs_measure_cable_impedance = false;
 			}
@@ -1918,7 +1926,8 @@ static void chg_full_check_worker(struct work_struct *work)
 		return;
 	}
 
-	schedule_delayed_work(&htc_batt_info.chg_full_check_work,
+	queue_delayed_work(system_power_efficient_wq,
+		&htc_batt_info.chg_full_check_work,
 		msecs_to_jiffies(CHG_FULL_CHECK_PERIOD_MS));
 
 }
@@ -1949,7 +1958,8 @@ static void chk_unknown_chg_worker(struct work_struct *work)
 		g_rerun_apsd_done = true;
 		if (delayed_work_pending(&htc_batt_info.chk_unknown_chg_work))
 			cancel_delayed_work(&htc_batt_info.chk_unknown_chg_work);
-		schedule_delayed_work(&htc_batt_info.chk_unknown_chg_work,
+		queue_delayed_work(system_power_efficient_wq,
+			&htc_batt_info.chk_unknown_chg_work,
 			msecs_to_jiffies(CHK_UNKNOWN_CHG_RERUN_APSD_PERIOD_MS));
 	} else {
 		if (current_max_now < SLOW_CHARGE_CURR)
@@ -2174,18 +2184,21 @@ void htc_battery_info_update(enum power_supply_property prop, int intval)
 							wake_lock(&htc_batt_info.charger_exist_lock);
 							BATT_EMBEDDED("charger_exist_lock Lock");
 						}
-						schedule_delayed_work(&htc_batt_info.chg_full_check_work,0);
+						queue_delayed_work(system_power_efficient_wq,
+							&htc_batt_info.chg_full_check_work,0);
 				} else {
 					if (delayed_work_pending(&htc_batt_info.chg_full_check_work)
 						&& (g_latest_chg_src == POWER_SUPPLY_TYPE_UNKNOWN)) {
 						BATT_LOG("cancel chg_full_check_work when plug out.\n");
 						cancel_delayed_work_sync(&htc_batt_info.chg_full_check_work);
-						schedule_delayed_work(&htc_batt_info.chg_full_check_work,0);
+						queue_delayed_work(system_power_efficient_wq,
+							&htc_batt_info.chg_full_check_work,0);
  					}
 				}
 				if (!g_flag_keep_charge_on && !g_usb_overheat) {
 					if(!delayed_work_pending(&htc_batt_info.is_usb_overheat_work))
-						schedule_delayed_work(&htc_batt_info.is_usb_overheat_work, 0);
+						queue_delayed_work(system_power_efficient_wq,
+							&htc_batt_info.is_usb_overheat_work, 0);
 				}
 			}
 			break;
