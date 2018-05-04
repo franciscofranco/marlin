@@ -1428,7 +1428,6 @@ enum Tfa98xx_Error tfa_dsp_msg_status(Tfa98xx_handle_t handle, int *pRpcStatus)
 const char *tfa98xx_get_i2c_status_id_string(int status)
 {
 	const char *p_id_str;
-	char latest_errorstr[64];
 
 	switch (status) {
 	case Tfa98xx_DSP_Not_Running:
@@ -1459,8 +1458,7 @@ const char *tfa98xx_get_i2c_status_id_string(int status)
 		p_id_str = "I2C buffer has overflowed: host has sent too many parameters, memory integrity is not guaranteed";
 		break;
 	default:
-		snprintf(latest_errorstr, sizeof(latest_errorstr)-1, "Unspecified error (%d)", (int)status);
-		p_id_str = latest_errorstr;
+		p_id_str = "Unspecified error";
 		break;
 	}
 
