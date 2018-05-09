@@ -1634,6 +1634,7 @@ void sapComputeSpectWeight( tSapChSelSpectInfo* pSpectInfoParams,
 
     tCsrScanResultInfo *pScanResult;
     tSapSpectChInfo *pSpectCh   = pSpectInfoParams->pSpectCh;
+    tSapSpectChInfo *pExtSpectCh = NULL;
     v_U32_t operatingBand = eCSR_DOT11_MODE_11g;
     v_U16_t channelWidth;
     v_U16_t secondaryChannelOffset;
@@ -1725,7 +1726,6 @@ void sapComputeSpectWeight( tSapChSelSpectInfo* pSpectInfoParams,
                         case eHT_CHANNEL_WIDTH_40MHZ: //HT40
                             switch( secondaryChannelOffset)
                             {
-                                tSapSpectChInfo *pExtSpectCh = NULL;
                                 case PHY_DOUBLE_CHANNEL_LOW_PRIMARY: // Above the Primary Channel
                                     pExtSpectCh = (pSpectCh + 1);
                                     if( pExtSpectCh != NULL &&
