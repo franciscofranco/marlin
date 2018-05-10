@@ -75,9 +75,9 @@ tfa_probe(unsigned char slave_address, int *pDevice);
  * @param profile the profile to load, if -1 then don't change profile
  * @param vsteps the volume step selections for each channel, if -1 then softmute
  *                        0 sets the maximum volume
- * @return enum tfa_error
+ * @return int
  */
-enum tfa_error tfa_start(int profile, int *vstep);
+int tfa_start(int profile, int *vstep);
 
 /**
  * Stop SpeakerBoost on all devices/channels.
@@ -87,9 +87,9 @@ enum tfa_error tfa_start(int profile, int *vstep);
  * Note that the function will block until the amplifiers are actually switched
  * off unless timed-out.
  *
- * @return enum tfa_error
+ * @return int
  */
-enum tfa_error tfa_stop(void);
+int tfa_stop(void);
 
 /**
  * discard container buffer and free all resources.\n
@@ -107,7 +107,7 @@ void tfa_deinit(void);
  *  - tfa_error_device channel error
  *  - tfa_error_noclock only register level init could be preformed
  */
-enum tfa_error tfa_reset(void);
+int tfa_reset(void);
 
 enum Tfa98xx_Error tfa_write_filters(int dev_idx, int prof_idx);
 
