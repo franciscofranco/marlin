@@ -1480,7 +1480,7 @@ static void batt_worker(struct work_struct *work)
 #endif // CONFIG_HTC_CHARGER
 		} else {
 			/* WA: QCT  recorgnize D+/D- open charger won't set 500mA. */
-			if ((htc_batt_info.rep.charging_source == POWER_SUPPLY_TYPE_USB)) {
+			if (htc_batt_info.rep.charging_source == POWER_SUPPLY_TYPE_USB) {
 				user_set_chg_curr = get_property(htc_batt_info.usb_psy, POWER_SUPPLY_PROP_CURRENT_MAX);
 				if (!get_connect2pc() && !g_rerun_apsd_done && !g_is_unknown_charger) {
 					user_set_chg_curr = SLOW_CHARGE_CURR;
