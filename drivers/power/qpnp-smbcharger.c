@@ -5233,9 +5233,9 @@ static void smbchg_hvdcp_det_work(struct work_struct *work)
 				pr_err("Couldn't disable input missing poller rc=%d\n", rc);
 			if (delayed_work_pending(&chip->iusb_5v_2a_detect_work))
 				cancel_delayed_work(&chip->iusb_5v_2a_detect_work);
-				queue_delayed_work(system_power_efficient_wq,
-					&chip->iusb_5v_2a_detect_work,
-					msecs_to_jiffies(AICL_5V_2A_DETECT_DELAY_MS));
+			queue_delayed_work(system_power_efficient_wq,
+				&chip->iusb_5v_2a_detect_work,
+				msecs_to_jiffies(AICL_5V_2A_DETECT_DELAY_MS));
 		}
 		g_is_hvdcp_detect_done = true;
 #endif /* CONFIG_HTC_BATT */
