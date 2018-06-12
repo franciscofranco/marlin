@@ -475,7 +475,7 @@ static int do_surface_dirty_sou(struct vmw_private *dev_priv,
 
 	BUG_ON(!clips || !num_clips);
 
-	tmp = kzalloc(sizeof(*tmp) * num_clips, GFP_KERNEL);
+	tmp = kcalloc(num_clips, sizeof(*tmp), GFP_KERNEL);
 	if (unlikely(tmp == NULL)) {
 		DRM_ERROR("Temporary cliprect memory alloc failed.\n");
 		return -ENOMEM;
@@ -1251,7 +1251,7 @@ int vmw_kms_present(struct vmw_private *dev_priv,
 	BUG_ON(surface == NULL);
 	BUG_ON(!clips || !num_clips);
 
-	tmp = kzalloc(sizeof(*tmp) * num_clips, GFP_KERNEL);
+	tmp = kcalloc(num_clips, sizeof(*tmp), GFP_KERNEL);
 	if (unlikely(tmp == NULL)) {
 		DRM_ERROR("Temporary cliprect memory alloc failed.\n");
 		return -ENOMEM;

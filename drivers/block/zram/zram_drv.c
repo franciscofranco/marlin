@@ -1336,7 +1336,7 @@ static int __init zram_init(void)
 	}
 
 	/* Allocate the device array and initialize each one */
-	zram_devices = kzalloc(num_devices * sizeof(struct zram), GFP_KERNEL);
+	zram_devices = kcalloc(num_devices, sizeof(struct zram), GFP_KERNEL);
 	if (!zram_devices) {
 		unregister_blkdev(zram_major, "zram");
 		return -ENOMEM;

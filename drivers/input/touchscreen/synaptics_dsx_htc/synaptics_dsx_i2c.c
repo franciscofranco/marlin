@@ -93,7 +93,7 @@ static int parse_config(struct device *dev, struct synaptics_dsx_board_data *bda
 	if (!cnt)
 		return -ENODEV;
 
-	cfg_table = kzalloc(cnt * (sizeof *cfg_table), GFP_KERNEL);
+	cfg_table = kcalloc(cnt, sizeof(*cfg_table), GFP_KERNEL);
 	if (!cfg_table)
 		return -ENOMEM;
 
