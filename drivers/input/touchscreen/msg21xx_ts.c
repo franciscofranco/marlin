@@ -1762,8 +1762,8 @@ static int msg21xx_ts_probe(struct i2c_client *client,
 		return -ENOMEM;
 
 	ts_data->client = client;
-	ts_data->info.point = devm_kzalloc(&client->dev,
-		sizeof(struct touchPoint_t) * pdata->num_max_touches,
+	ts_data->info.point = devm_kcalloc(&client->dev,
+		pdata->num_max_touches, sizeof(struct touchPoint_t),
 		GFP_KERNEL);
 	if (!ts_data->info.point) {
 		dev_err(&client->dev, "Not enough memory\n");

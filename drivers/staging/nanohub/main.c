@@ -1409,9 +1409,10 @@ static struct nanohub_platform_data *nanohub_parse_dt(struct device *dev)
 	if (tmp) {
 		pdata->num_flash_banks = be32_to_cpup(tmp);
 		pdata->flash_banks =
-		    devm_kzalloc(dev,
-				 sizeof(struct nanohub_flash_bank) *
-				 pdata->num_flash_banks, GFP_KERNEL);
+		    devm_kcalloc(dev,
+				 pdata->num_flash_banks,
+				 sizeof(struct nanohub_flash_bank),
+				 GFP_KERNEL);
 		if (!pdata->flash_banks)
 			goto no_mem;
 
@@ -1442,9 +1443,10 @@ static struct nanohub_platform_data *nanohub_parse_dt(struct device *dev)
 	if (tmp) {
 		pdata->num_shared_flash_banks = be32_to_cpup(tmp);
 		pdata->shared_flash_banks =
-		    devm_kzalloc(dev,
-				 sizeof(struct nanohub_flash_bank) *
-				 pdata->num_shared_flash_banks, GFP_KERNEL);
+		    devm_kcalloc(dev,
+				 pdata->num_shared_flash_banks,
+				 sizeof(struct nanohub_flash_bank),
+				 GFP_KERNEL);
 		if (!pdata->shared_flash_banks)
 			goto no_mem_shared;
 
