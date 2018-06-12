@@ -144,7 +144,7 @@ int pktlog_alloc_buf(struct ol_softc *scn)
 	}
 	spin_unlock_bh(&pl_info->log_lock);
 
-	if ((buffer = vmalloc((page_cnt + 2) * PAGE_SIZE)) == NULL) {
+	if ((buffer = vmalloc(array_size((page_cnt + 2), PAGE_SIZE))) == NULL) {
 		printk(PKTLOG_TAG
 		       "%s: Unable to allocate buffer "
 		       "(%d pages)\n", __func__, page_cnt);

@@ -689,10 +689,10 @@ void htc_monitor_init(void)
 		htc_kernel_top = vmalloc(sizeof(*htc_kernel_top));
 		spin_lock_init(&htc_kernel_top->lock);
 
-		htc_kernel_top->prev_proc_stat = vmalloc(sizeof(long) * MAX_PID);
-		htc_kernel_top->curr_proc_delta = vmalloc(sizeof(long) * MAX_PID);
-		htc_kernel_top->task_ptr_array = vmalloc(sizeof(long) * MAX_PID);
-		htc_kernel_top->curr_proc_pid = vmalloc(sizeof(long) * MAX_PID);
+		htc_kernel_top->prev_proc_stat = vmalloc(array_size(MAX_PID, sizeof(long)));
+		htc_kernel_top->curr_proc_delta = vmalloc(array_size(MAX_PID, sizeof(long)));
+		htc_kernel_top->task_ptr_array = vmalloc(array_size(MAX_PID, sizeof(long)));
+		htc_kernel_top->curr_proc_pid = vmalloc(array_size(MAX_PID, sizeof(long)));
 
 		memset(htc_kernel_top->prev_proc_stat, 0, sizeof(long) * MAX_PID);
 		memset(htc_kernel_top->curr_proc_delta, 0, sizeof(long) * MAX_PID);

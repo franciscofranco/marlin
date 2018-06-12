@@ -1624,7 +1624,7 @@ struct iio_dev *nanohub_probe(struct device *dev, struct iio_dev *iio_dev)
 
 	nanohub_io_init(&data->free_pool, data, dev);
 
-	buf = vmalloc(sizeof(*buf) * READ_QUEUE_DEPTH);
+	buf = vmalloc(array_size(READ_QUEUE_DEPTH, sizeof(*buf)));
 	data->vbuf = buf;
 	if (!buf) {
 		ret = -ENOMEM;
