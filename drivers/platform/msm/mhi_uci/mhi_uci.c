@@ -265,8 +265,9 @@ static int mhi_init_inbound(struct uci_client *client_handle,
 	chan_attributes->nr_trbs =
 			mhi_get_free_desc(client_handle->in_handle);
 	client_handle->in_buf_list =
-			kmalloc(sizeof(void *) * chan_attributes->nr_trbs,
-			GFP_KERNEL);
+			kmalloc_array(chan_attributes->nr_trbs,
+				      sizeof(void *),
+				      GFP_KERNEL);
 	if (!client_handle->in_buf_list)
 		return -ENOMEM;
 

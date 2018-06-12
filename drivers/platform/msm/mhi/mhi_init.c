@@ -27,22 +27,25 @@ static int mhi_init_sync(struct mhi_device_ctxt *mhi_dev_ctxt)
 {
 	int i;
 
-	mhi_dev_ctxt->mhi_ev_spinlock_list = kmalloc(sizeof(spinlock_t) *
-					mhi_dev_ctxt->mmio_info.nr_event_rings,
-					GFP_KERNEL);
+	mhi_dev_ctxt->mhi_ev_spinlock_list = kmalloc_array(mhi_dev_ctxt->mmio_info.nr_event_rings,
+							   sizeof(spinlock_t),
+							   GFP_KERNEL);
 	if (NULL == mhi_dev_ctxt->mhi_ev_spinlock_list)
 		goto ev_mutex_free;
-	mhi_dev_ctxt->mhi_chan_mutex = kmalloc(sizeof(struct mutex) *
-						MHI_MAX_CHANNELS, GFP_KERNEL);
+	mhi_dev_ctxt->mhi_chan_mutex = kmalloc_array(MHI_MAX_CHANNELS,
+						     sizeof(struct mutex),
+						     GFP_KERNEL);
 	if (NULL == mhi_dev_ctxt->mhi_chan_mutex)
 		goto chan_mutex_free;
-	mhi_dev_ctxt->mhi_cmd_mutex_list = kmalloc(sizeof(struct mutex) *
-						NR_OF_CMD_RINGS, GFP_KERNEL);
+	mhi_dev_ctxt->mhi_cmd_mutex_list = kmalloc_array(NR_OF_CMD_RINGS,
+							 sizeof(struct mutex),
+							 GFP_KERNEL);
 	if (NULL == mhi_dev_ctxt->mhi_cmd_mutex_list)
 		goto cmd_mutex_free;
 
-	mhi_dev_ctxt->db_write_lock = kmalloc(sizeof(spinlock_t) *
-						MHI_MAX_CHANNELS, GFP_KERNEL);
+	mhi_dev_ctxt->db_write_lock = kmalloc_array(MHI_MAX_CHANNELS,
+						    sizeof(spinlock_t),
+						    GFP_KERNEL);
 	if (NULL == mhi_dev_ctxt->db_write_lock)
 		goto db_write_lock_free;
 	for (i = 0; i < MHI_MAX_CHANNELS; ++i)
