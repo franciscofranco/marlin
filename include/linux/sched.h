@@ -3279,6 +3279,7 @@ int register_cpu_cycle_counter_cb(struct cpu_cycle_counter_cb *cb);
 #ifdef CONFIG_DYNAMIC_STUNE_BOOST
 int do_stune_boost(char *st_name, int boost);
 int reset_stune_boost(char *st_name);
+int stune_boost(char *st_name);
 #endif /* CONFIG_DYNAMIC_STUNE_BOOST */
 
 #endif
