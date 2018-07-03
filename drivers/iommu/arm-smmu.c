@@ -3263,8 +3263,8 @@ static int arm_smmu_init_clocks(struct arm_smmu_device *smmu)
 	if (smmu->num_clocks < 1)
 		return 0;
 
-	smmu->clocks = devm_kzalloc(
-		dev, sizeof(*smmu->clocks) * smmu->num_clocks,
+	smmu->clocks = devm_kcalloc(
+		dev, smmu->num_clocks, sizeof(*smmu->clocks),
 		GFP_KERNEL);
 
 	if (!smmu->clocks) {
@@ -3344,13 +3344,14 @@ static int arm_smmu_parse_impl_def_registers(struct arm_smmu_device *smmu)
 		return -EINVAL;
 	}
 
-	regs = devm_kmalloc(
-		dev, sizeof(*smmu->impl_def_attach_registers) * ntuples,
+	regs = devm_kmalloc_array(
+		dev, ntuples, sizeof(*smmu->impl_def_attach_registers),
 		GFP_KERNEL);
 	if (!regs)
 		return -ENOMEM;
 
-	tuples = devm_kmalloc(dev, sizeof(u32) * ntuples * 2, GFP_KERNEL);
+	tuples = devm_kmalloc(dev, array3_size(sizeof(u32), ntuples, 2),
+			      GFP_KERNEL);
 	if (!tuples)
 		return -ENOMEM;
 
@@ -3591,7 +3592,7 @@ static int arm_smmu_device_dt_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
-	smmu->irqs = devm_kzalloc(dev, sizeof(*smmu->irqs) * num_irqs,
+	smmu->irqs = devm_kcalloc(dev, num_irqs, sizeof(*smmu->irqs),
 				  GFP_KERNEL);
 	if (!smmu->irqs) {
 		dev_err(dev, "failed to allocate %d irqs\n", num_irqs);

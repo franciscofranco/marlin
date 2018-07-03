@@ -2219,8 +2219,10 @@ static int hdmi_resources_init(struct hdmi_context *hdata)
 
 	clk_set_parent(res->mout_hdmi, res->sclk_pixel);
 
-	res->regul_bulk = devm_kzalloc(dev, ARRAY_SIZE(supply) *
-		sizeof(res->regul_bulk[0]), GFP_KERNEL);
+	res->regul_bulk = devm_kcalloc(dev,
+				       ARRAY_SIZE(supply),
+				       sizeof(res->regul_bulk[0]),
+				       GFP_KERNEL);
 	if (!res->regul_bulk) {
 		ret = -ENOMEM;
 		goto fail;

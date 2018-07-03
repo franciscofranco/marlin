@@ -1316,17 +1316,17 @@ static inline void set_cmdline(int idx, const char *cmdline)
 static int allocate_cmdlines_buffer(unsigned int val,
 				    struct saved_cmdlines_buffer *s)
 {
-	s->map_cmdline_to_pid = vmalloc(val * sizeof(*s->map_cmdline_to_pid));
+	s->map_cmdline_to_pid = vmalloc(array_size(val, sizeof(*s->map_cmdline_to_pid)));
 	if (!s->map_cmdline_to_pid)
 		return -ENOMEM;
 
-	s->saved_cmdlines = vmalloc(val * TASK_COMM_LEN);
+	s->saved_cmdlines = vmalloc(array_size(TASK_COMM_LEN, val));
 	if (!s->saved_cmdlines) {
 		vfree(s->map_cmdline_to_pid);
 		return -ENOMEM;
 	}
 
-	s->saved_tgids = vmalloc(val * sizeof(*s->saved_tgids));
+	s->saved_tgids = vmalloc(array_size(val, sizeof(*s->saved_tgids)));
 	if (!s->saved_tgids) {
 		vfree(s->saved_cmdlines);
 		vfree(s->map_cmdline_to_pid);
@@ -3047,7 +3047,8 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
 	if (!iter)
 		return ERR_PTR(-ENOMEM);
 
-	iter->buffer_iter = kzalloc(sizeof(*iter->buffer_iter) * num_possible_cpus(),
+	iter->buffer_iter = kcalloc(num_possible_cpus(),
+				    sizeof(*iter->buffer_iter),
 				    GFP_KERNEL);
 	if (!iter->buffer_iter)
 		goto release;
@@ -3976,7 +3977,7 @@ tracing_saved_tgids_read(struct file *file, char __user *ubuf,
 	int pid;
 	int i;
 
-	file_buf = vmalloc(savedcmd->cmdline_num*(16+1+16));
+	file_buf = vmalloc(array_size(savedcmd->cmdline_num, (16 + 1 + 16)));
 	if (!file_buf)
 		return -ENOMEM;
 

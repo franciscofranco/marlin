@@ -1674,8 +1674,7 @@ static int btrfsic_read_block(struct btrfsic_state *state,
 
 	num_pages = (block_ctx->len + (u64)PAGE_CACHE_SIZE - 1) >>
 		    PAGE_CACHE_SHIFT;
-	block_ctx->mem_to_free = kzalloc((sizeof(*block_ctx->datav) +
-					  sizeof(*block_ctx->pagev)) *
+	block_ctx->mem_to_free = kcalloc(sizeof(*block_ctx->datav) + sizeof(*block_ctx->pagev),
 					 num_pages, GFP_NOFS);
 	if (!block_ctx->mem_to_free)
 		return -1;
@@ -3029,8 +3028,9 @@ static void __btrfsic_submit_bio(int rw, struct bio *bio)
 			       (unsigned long long)bio->bi_iter.bi_sector,
 			       dev_bytenr, bio->bi_bdev);
 
-		mapped_datav = kmalloc(sizeof(*mapped_datav) * bio->bi_vcnt,
-				       GFP_NOFS);
+		mapped_datav = kmalloc_array(bio->bi_vcnt,
+					     sizeof(*mapped_datav),
+					     GFP_NOFS);
 		if (!mapped_datav)
 			goto leave;
 		cur_bytenr = dev_bytenr;

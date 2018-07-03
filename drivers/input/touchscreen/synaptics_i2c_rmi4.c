@@ -1643,9 +1643,10 @@ static int synaptics_rmi4_get_button_map(struct device *dev, char *name,
 		if (!rmi4_pdata->capacitance_button_map)
 			return -ENOMEM;
 
-		rmi4_pdata->capacitance_button_map->map = devm_kzalloc(dev,
-			sizeof(*rmi4_pdata->capacitance_button_map->map) *
-			MAX_NUMBER_OF_BUTTONS, GFP_KERNEL);
+		rmi4_pdata->capacitance_button_map->map = devm_kcalloc(dev,
+			MAX_NUMBER_OF_BUTTONS,
+			sizeof(*rmi4_pdata->capacitance_button_map->map),
+			GFP_KERNEL);
 		if (!rmi4_pdata->capacitance_button_map->map)
 			return -ENOMEM;
 
@@ -1890,9 +1891,10 @@ static int synaptics_rmi4_parse_dt(struct device *dev,
 		if (!rmi4_pdata->capacitance_button_map)
 			return -ENOMEM;
 
-		rmi4_pdata->capacitance_button_map->map = devm_kzalloc(dev,
-			sizeof(*rmi4_pdata->capacitance_button_map->map) *
-			MAX_NUMBER_OF_BUTTONS, GFP_KERNEL);
+		rmi4_pdata->capacitance_button_map->map = devm_kcalloc(dev,
+			MAX_NUMBER_OF_BUTTONS,
+			sizeof(*rmi4_pdata->capacitance_button_map->map),
+			GFP_KERNEL);
 		if (!rmi4_pdata->capacitance_button_map->map)
 			return -ENOMEM;
 
@@ -3438,7 +3440,7 @@ static int synaptics_rmi4_probe(struct i2c_client *client,
 		return -EINVAL;
 	}
 
-	rmi4_data = kzalloc(sizeof(*rmi4_data) * 2, GFP_KERNEL);
+	rmi4_data = kcalloc(2, sizeof(*rmi4_data), GFP_KERNEL);
 	if (!rmi4_data)
 		return -ENOMEM;
 

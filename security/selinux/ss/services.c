@@ -2020,7 +2020,7 @@ int security_load_policy(void *data, size_t len)
 	int rc = 0;
 	struct policy_file file = { data, len }, *fp = &file;
 
-	oldpolicydb = kzalloc(2 * sizeof(*oldpolicydb), GFP_KERNEL);
+	oldpolicydb = kcalloc(2, sizeof(*oldpolicydb), GFP_KERNEL);
 	if (!oldpolicydb) {
 		rc = -ENOMEM;
 		goto out;
@@ -2611,7 +2611,7 @@ int security_get_bools(int *len, char ***names, int **values)
 		name_len = strlen(sym_name(&policydb, SYM_BOOLS, i)) + 1;
 
 		rc = -ENOMEM;
-		(*names)[i] = kmalloc(sizeof(char) * name_len, GFP_ATOMIC);
+		(*names)[i] = kmalloc(name_len, GFP_ATOMIC);
 		if (!(*names)[i])
 			goto err;
 

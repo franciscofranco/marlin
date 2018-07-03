@@ -430,7 +430,7 @@ static struct dma_async_tx_descriptor *k3_dma_prep_memcpy(
 		return NULL;
 
 	num = DIV_ROUND_UP(len, DMA_MAX_SIZE);
-	ds = kzalloc(sizeof(*ds) + num * sizeof(ds->desc_hw[0]), GFP_ATOMIC);
+	ds = kzalloc(struct_size(ds, desc_hw, num), GFP_ATOMIC);
 	if (!ds) {
 		dev_dbg(chan->device->dev, "vchan %p: kzalloc fail\n", &c->vc);
 		return NULL;
@@ -486,7 +486,7 @@ static struct dma_async_tx_descriptor *k3_dma_prep_slave_sg(
 			num += DIV_ROUND_UP(avail, DMA_MAX_SIZE) - 1;
 	}
 
-	ds = kzalloc(sizeof(*ds) + num * sizeof(ds->desc_hw[0]), GFP_ATOMIC);
+	ds = kzalloc(struct_size(ds, desc_hw, num), GFP_ATOMIC);
 	if (!ds) {
 		dev_dbg(chan->device->dev, "vchan %p: kzalloc fail\n", &c->vc);
 		return NULL;
@@ -698,8 +698,8 @@ static int k3_dma_probe(struct platform_device *op)
 		return ret;
 
 	/* init phy channel */
-	d->phy = devm_kzalloc(&op->dev,
-		d->dma_channels * sizeof(struct k3_dma_phy), GFP_KERNEL);
+	d->phy = devm_kcalloc(&op->dev,
+		d->dma_channels, sizeof(struct k3_dma_phy), GFP_KERNEL);
 	if (d->phy == NULL)
 		return -ENOMEM;
 
@@ -725,8 +725,8 @@ static int k3_dma_probe(struct platform_device *op)
 	d->slave.chancnt = d->dma_requests;
 
 	/* init virtual channel */
-	d->chans = devm_kzalloc(&op->dev,
-		d->dma_requests * sizeof(struct k3_dma_chan), GFP_KERNEL);
+	d->chans = devm_kcalloc(&op->dev,
+		d->dma_requests, sizeof(struct k3_dma_chan), GFP_KERNEL);
 	if (d->chans == NULL)
 		return -ENOMEM;
 

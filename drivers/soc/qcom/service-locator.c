@@ -302,9 +302,9 @@ static int service_locator_send_msg(struct pd_qmi_client_data *pd)
 			pd->total_domains = resp->total_domains;
 			if (!resp->total_domains)
 				pr_info("No matching domains found\n");
-			pd->domain_list = kmalloc(
-					sizeof(struct servreg_loc_entry_v01) *
-					resp->total_domains, GFP_KERNEL);
+			pd->domain_list = kmalloc_array(resp->total_domains,
+							sizeof(struct servreg_loc_entry_v01),
+							GFP_KERNEL);
 			if (!pd->domain_list) {
 				pr_err("Cannot allocate domain list\n");
 				rc = -ENOMEM;

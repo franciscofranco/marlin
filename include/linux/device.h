@@ -27,6 +27,7 @@
 #include <linux/ratelimit.h>
 #include <linux/uidgid.h>
 #include <linux/gfp.h>
+#include <linux/overflow.h>
 #include <asm/device.h>
 
 struct device;
@@ -573,13 +574,21 @@ typedef void (*dr_release_t)(struct device *dev, void *res);
 typedef int (*dr_match_t)(struct device *dev, void *res, void *match_data);
 
 #ifdef CONFIG_DEBUG_DEVRES
-extern void *__devres_alloc(dr_release_t release, size_t size, gfp_t gfp,
-			     const char *name);
+extern void *__devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp,
+				 int nid, const char *name);
 #define devres_alloc(release, size, gfp) \
-	__devres_alloc(release, size, gfp, #release)
+	__devres_alloc_node(release, size, gfp, NUMA_NO_NODE, #release)
+#define devres_alloc_node(release, size, gfp, nid) \
+	__devres_alloc_node(release, size, gfp, nid, #release)
 #else
-extern void *devres_alloc(dr_release_t release, size_t size, gfp_t gfp);
+extern void *devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp,
+			       int nid);
+static inline void *devres_alloc(dr_release_t release, size_t size, gfp_t gfp)
+{
+	return devres_alloc_node(release, size, gfp, NUMA_NO_NODE);
+}
 #endif
+
 extern void devres_for_each_res(struct device *dev, dr_release_t release,
 				dr_match_t match, void *match_data,
 				void (*fn)(struct device *, void *, void *),
@@ -617,9 +626,12 @@ static inline void *devm_kzalloc(struct device *dev, size_t size, gfp_t gfp)
 static inline void *devm_kmalloc_array(struct device *dev,
 				       size_t n, size_t size, gfp_t flags)
 {
-	if (size != 0 && n > SIZE_MAX / size)
+	size_t bytes;
+
+	if (unlikely(check_mul_overflow(n, size, &bytes)))
 		return NULL;
-	return devm_kmalloc(dev, n * size, flags);
+
+	return devm_kmalloc(dev, bytes, flags);
 }
 static inline void *devm_kcalloc(struct device *dev,
 				 size_t n, size_t size, gfp_t flags)

@@ -396,7 +396,8 @@ static int dsa_of_setup_routing_table(struct dsa_platform_data *pd,
 
 	/* First time routing table allocation */
 	if (!cd->rtable) {
-		cd->rtable = kmalloc(pd->nr_chips * sizeof(s8), GFP_KERNEL);
+		cd->rtable = kmalloc_array(pd->nr_chips, sizeof(s8),
+					   GFP_KERNEL);
 		if (!cd->rtable)
 			return -ENOMEM;
 
@@ -475,8 +476,8 @@ static int dsa_of_probe(struct platform_device *pdev)
 	if (pd->nr_chips > DSA_MAX_SWITCHES)
 		pd->nr_chips = DSA_MAX_SWITCHES;
 
-	pd->chip = kzalloc(pd->nr_chips * sizeof(struct dsa_chip_data),
-			GFP_KERNEL);
+	pd->chip = kcalloc(pd->nr_chips, sizeof(struct dsa_chip_data),
+			   GFP_KERNEL);
 	if (!pd->chip) {
 		ret = -ENOMEM;
 		goto out_free;

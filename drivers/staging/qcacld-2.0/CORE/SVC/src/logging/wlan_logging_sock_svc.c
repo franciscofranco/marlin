@@ -959,8 +959,7 @@ int wlan_logging_sock_activate_svc(int log_fe_to_console, int num_buf)
 
 	gapp_pid = INVALID_PID;
 
-	gplog_msg = (struct log_msg *) vmalloc(
-			num_buf * sizeof(struct log_msg));
+	gplog_msg = (struct log_msg *) vmalloc(array_size(num_buf, sizeof(struct log_msg)));
 	if (!gplog_msg) {
 		pr_err("%s: Could not allocate memory\n", __func__);
 		return -ENOMEM;
@@ -986,7 +985,7 @@ int wlan_logging_sock_activate_svc(int log_fe_to_console, int num_buf)
 
 	/* Initialize the pktStats data structure here */
 	pkt_stats_size = sizeof(struct pkt_stats_msg);
-	gpkt_stats_buffers = vmalloc(MAX_PKTSTATS_BUFF * pkt_stats_size);
+	gpkt_stats_buffers = vmalloc(array_size(pkt_stats_size, MAX_PKTSTATS_BUFF));
 	if (!gpkt_stats_buffers) {
 		pr_err("%s: Could not allocate memory for Pkt stats\n",
 			__func__);

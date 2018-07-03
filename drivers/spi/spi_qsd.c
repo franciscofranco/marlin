@@ -326,14 +326,14 @@ static int msm_spi_clk_path_init_structs(struct msm_spi *dd)
 
 	dev_dbg(dd->dev, "initialises path clock voting structs");
 
-	paths = devm_kzalloc(dd->dev, sizeof(*paths) * 2, GFP_KERNEL);
+	paths = devm_kcalloc(dd->dev, 2, sizeof(*paths), GFP_KERNEL);
 	if (!paths) {
 		dev_err(dd->dev,
 		"msm_bus_paths.paths memory allocation failed");
 		return -ENOMEM;
 	}
 
-	usecases = devm_kzalloc(dd->dev, sizeof(*usecases) * 2, GFP_KERNEL);
+	usecases = devm_kcalloc(dd->dev, 2, sizeof(*usecases), GFP_KERNEL);
 	if (!usecases) {
 		dev_err(dd->dev,
 		"msm_bus_scale_pdata.usecases memory allocation failed");

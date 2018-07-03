@@ -1426,7 +1426,8 @@ static int htc_vreg_dump_probe(struct platform_device *pdev)
 		num_vreg++;
         qpnp_vregs.total_vregs = num_vreg;
 
-	qpnp_vregs.vregs = kzalloc(num_vreg * sizeof(struct _vreg), GFP_KERNEL);
+	qpnp_vregs.vregs = kcalloc(num_vreg, sizeof(struct _vreg),
+				   GFP_KERNEL);
 	if (!qpnp_vregs.vregs)
 		return -ENOMEM;
 

@@ -804,23 +804,25 @@ static int srp_alloc_req_data(struct srp_target_port *target)
 
 	INIT_LIST_HEAD(&target->free_reqs);
 
-	target->req_ring = kzalloc(target->req_ring_size *
-				   sizeof(*target->req_ring), GFP_KERNEL);
+	target->req_ring = kcalloc(target->req_ring_size,
+				   sizeof(*target->req_ring),
+				   GFP_KERNEL);
 	if (!target->req_ring)
 		goto out;
 
 	for (i = 0; i < target->req_ring_size; ++i) {
 		req = &target->req_ring[i];
-		mr_list = kmalloc(target->cmd_sg_cnt * sizeof(void *),
-				  GFP_KERNEL);
+		mr_list = kmalloc_array(target->cmd_sg_cnt, sizeof(void *),
+					GFP_KERNEL);
 		if (!mr_list)
 			goto out;
 		if (srp_dev->use_fast_reg)
 			req->fr_list = mr_list;
 		else
 			req->fmr_list = mr_list;
-		req->map_page = kmalloc(srp_dev->max_pages_per_mr *
-					sizeof(void *), GFP_KERNEL);
+		req->map_page = kmalloc_array(srp_dev->max_pages_per_mr,
+					      sizeof(void *),
+					      GFP_KERNEL);
 		if (!req->map_page)
 			goto out;
 		req->indirect_desc = kmalloc(target->indirect_size, GFP_KERNEL);
@@ -1967,11 +1969,13 @@ static int srp_alloc_iu_bufs(struct srp_target_port *target)
 {
 	int i;
 
-	target->rx_ring = kzalloc(target->queue_size * sizeof(*target->rx_ring),
+	target->rx_ring = kcalloc(target->queue_size,
+				  sizeof(*target->rx_ring),
 				  GFP_KERNEL);
 	if (!target->rx_ring)
 		goto err_no_ring;
-	target->tx_ring = kzalloc(target->queue_size * sizeof(*target->tx_ring),
+	target->tx_ring = kcalloc(target->queue_size,
+				  sizeof(*target->tx_ring),
 				  GFP_KERNEL);
 	if (!target->tx_ring)
 		goto err_no_ring;

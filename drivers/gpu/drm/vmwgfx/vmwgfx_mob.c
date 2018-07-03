@@ -236,7 +236,7 @@ int vmw_otables_setup(struct vmw_private *dev_priv)
 	SVGAOTableType i;
 	int ret;
 
-	otables = kzalloc(SVGA_OTABLE_DX9_MAX * sizeof(*otables),
+	otables = kcalloc(SVGA_OTABLE_DX9_MAX, sizeof(*otables),
 			  GFP_KERNEL);
 	if (unlikely(otables == NULL)) {
 		DRM_ERROR("Failed to allocate space for otable "

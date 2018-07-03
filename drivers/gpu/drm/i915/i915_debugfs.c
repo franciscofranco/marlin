@@ -3286,8 +3286,8 @@ static int pipe_crc_set_source(struct drm_device *dev, enum pipe pipe,
 		DRM_DEBUG_DRIVER("collecting CRCs for pipe %c, %s\n",
 				 pipe_name(pipe), pipe_crc_source_name(source));
 
-		pipe_crc->entries = kzalloc(sizeof(*pipe_crc->entries) *
-					    INTEL_PIPE_CRC_ENTRIES_NR,
+		pipe_crc->entries = kcalloc(INTEL_PIPE_CRC_ENTRIES_NR,
+					    sizeof(*pipe_crc->entries),
 					    GFP_KERNEL);
 		if (!pipe_crc->entries)
 			return -ENOMEM;

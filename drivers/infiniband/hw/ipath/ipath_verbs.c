@@ -2003,8 +2003,8 @@ int ipath_register_ib_device(struct ipath_devdata *dd)
 	dev = &idev->ibdev;
 
 	if (dd->ipath_sdma_descq_cnt) {
-		tx = kmalloc(dd->ipath_sdma_descq_cnt * sizeof *tx,
-			     GFP_KERNEL);
+		tx = kmalloc_array(dd->ipath_sdma_descq_cnt, sizeof(*tx),
+				   GFP_KERNEL);
 		if (tx == NULL) {
 			ret = -ENOMEM;
 			goto err_tx;
@@ -2037,7 +2037,7 @@ int ipath_register_ib_device(struct ipath_devdata *dd)
 	 * the LKEY).  The remaining bits act as a generation number or tag.
 	 */
 	idev->lk_table.max = 1 << ib_ipath_lkey_table_size;
-	idev->lk_table.table = kzalloc(idev->lk_table.max *
+	idev->lk_table.table = kcalloc(idev->lk_table.max,
 				       sizeof(*idev->lk_table.table),
 				       GFP_KERNEL);
 	if (idev->lk_table.table == NULL) {

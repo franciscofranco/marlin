@@ -230,9 +230,9 @@ static s32 _volume_cmds_alloc1(s32 size)
 {
 	_volume_cmds_free();
 	_vol_cmd_cnt = size;
-	_vol_cmds = kzalloc(_vol_cmd_cnt * sizeof(int *), GFP_KERNEL);
+	_vol_cmds = kcalloc(_vol_cmd_cnt, sizeof(int *), GFP_KERNEL);
 	if (_vol_cmds) {
-		_vol_cmds_d = kzalloc(_vol_cmd_cnt * sizeof(struct vol_cmds_d),
+		_vol_cmds_d = kcalloc(_vol_cmd_cnt, sizeof(struct vol_cmds_d),
 					GFP_KERNEL);
 	}
 	if (_vol_cmds_d)

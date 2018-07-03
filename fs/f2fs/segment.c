@@ -1770,7 +1770,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
 
 	SM_I(sbi)->sit_info = sit_i;
 
-	sit_i->sentries = vzalloc(MAIN_SEGS(sbi) * sizeof(struct seg_entry));
+	sit_i->sentries = vzalloc(array_size(sizeof(struct seg_entry), MAIN_SEGS(sbi)));
 	if (!sit_i->sentries)
 		return -ENOMEM;
 
@@ -1790,8 +1790,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
 	}
 
 	if (sbi->segs_per_sec > 1) {
-		sit_i->sec_entries = vzalloc(MAIN_SECS(sbi) *
-					sizeof(struct sec_entry));
+		sit_i->sec_entries = vzalloc(array_size(sizeof(struct sec_entry), MAIN_SECS(sbi)));
 		if (!sit_i->sec_entries)
 			return -ENOMEM;
 	}

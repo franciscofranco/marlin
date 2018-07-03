@@ -140,7 +140,7 @@ int qib_create_ctxts(struct qib_devdata *dd)
 	 * Allocate full ctxtcnt array, rather than just cfgctxts, because
 	 * cleanup iterates across all possible ctxts.
 	 */
-	dd->rcd = kzalloc(sizeof(*dd->rcd) * dd->ctxtcnt, GFP_KERNEL);
+	dd->rcd = kcalloc(dd->ctxtcnt, sizeof(*dd->rcd), GFP_KERNEL);
 	if (!dd->rcd) {
 		qib_dev_err(dd,
 			"Unable to allocate ctxtdata array, failing\n");
@@ -390,14 +390,14 @@ static void init_shadow_tids(struct qib_devdata *dd)
 	struct page **pages;
 	dma_addr_t *addrs;
 
-	pages = vzalloc(dd->cfgctxts * dd->rcvtidcnt * sizeof(struct page *));
+	pages = vzalloc(array_size(sizeof(struct page *), (dd->cfgctxts * dd->rcvtidcnt)));
 	if (!pages) {
 		qib_dev_err(dd,
 			"failed to allocate shadow page * array, no expected sends!\n");
 		goto bail;
 	}
 
-	addrs = vzalloc(dd->cfgctxts * dd->rcvtidcnt * sizeof(dma_addr_t));
+	addrs = vzalloc(array_size(sizeof(dma_addr_t), (dd->cfgctxts * dd->rcvtidcnt)));
 	if (!addrs) {
 		qib_dev_err(dd,
 			"failed to allocate shadow dma handle array, no expected sends!\n");
@@ -1162,8 +1162,8 @@ struct qib_devdata *qib_alloc_devdata(struct pci_dev *pdev, size_t extra)
 
 	if (!qib_cpulist_count) {
 		u32 count = num_online_cpus();
-		qib_cpulist = kzalloc(BITS_TO_LONGS(count) *
-				      sizeof(long), GFP_KERNEL);
+		qib_cpulist = kcalloc(BITS_TO_LONGS(count), sizeof(long),
+				      GFP_KERNEL);
 		if (qib_cpulist)
 			qib_cpulist_count = count;
 		else
@@ -1700,8 +1700,8 @@ int qib_setup_eagerbufs(struct qib_ctxtdata *rcd)
 	size = rcd->rcvegrbuf_size;
 	if (!rcd->rcvegrbuf) {
 		rcd->rcvegrbuf =
-			kzalloc_node(chunk * sizeof(rcd->rcvegrbuf[0]),
-				GFP_KERNEL, rcd->node_id);
+			kcalloc_node(chunk, sizeof(rcd->rcvegrbuf[0]),
+				     GFP_KERNEL, rcd->node_id);
 		if (!rcd->rcvegrbuf)
 			goto bail;
 	}

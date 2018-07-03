@@ -261,9 +261,8 @@ static long touch_fwu_ioctl(struct file *filp, unsigned int cmd, unsigned long a
 			if (fw_cdev->fw_size) {
 				if (fw_cdev->buf == NULL) {
 					pr_info("%s: allocate buf", __func__);
-					buf = kzalloc(
-						fw_cdev->fw_size*sizeof(unsigned char),
-						GFP_KERNEL);
+					buf = kzalloc(fw_cdev->fw_size,
+						      GFP_KERNEL);
 					if (!buf) {
 						pr_err("%s, allocate failed", __func__);
 						return -1;
@@ -484,7 +483,7 @@ static int __init touch_fwu_init(void)
 		return ret;
 	}
 
-	fwu_cdev_data = kzalloc(1*sizeof(struct cdev_data), GFP_KERNEL);
+	fwu_cdev_data = kcalloc(1, sizeof(struct cdev_data), GFP_KERNEL);
 	if (fwu_cdev_data == NULL) {
 		pr_info("Allocate cdev_data failed");
 		return -ENOMEM;

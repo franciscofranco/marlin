@@ -1028,7 +1028,8 @@ static int * __init get_sync_cluster(struct device *dev, int *cnt)
 		pr_err("Invalid cluster count:%d\n", cluster_cnt);
 		return NULL;
 	}
-	sync_cluster = devm_kzalloc(dev, sizeof(int) * cluster_cnt, GFP_KERNEL);
+	sync_cluster = devm_kcalloc(dev, cluster_cnt, sizeof(int),
+				    GFP_KERNEL);
 	if (!sync_cluster) {
 		pr_err("Memory alloc failed\n");
 		return NULL;
@@ -1377,7 +1378,9 @@ static void update_cpu_topology(struct device *dev)
 		core_ptr = NULL;
 		return;
 	}
-	temp_ptr = devm_kzalloc(dev, sizeof(struct cluster_info) * cluster_cnt,
+	temp_ptr = devm_kcalloc(dev,
+					cluster_cnt,
+					sizeof(struct cluster_info),
 					GFP_KERNEL);
 	if (!temp_ptr) {
 		pr_err("Memory alloc failed\n");
@@ -1493,9 +1496,9 @@ static int init_cluster_freq_table(void)
 			ret = -EINVAL;
 			goto exit;
 		}
-		cluster_ptr->freq_table = kzalloc(
-			sizeof(struct cpufreq_frequency_table) * table_len,
-			GFP_KERNEL);
+		cluster_ptr->freq_table = kcalloc(table_len,
+						  sizeof(struct cpufreq_frequency_table),
+						  GFP_KERNEL);
 		if (!cluster_ptr->freq_table) {
 			pr_err("memory alloc failed\n");
 			cluster_ptr->freq_idx = cluster_ptr->freq_idx_low =
@@ -1635,8 +1638,8 @@ static int check_freq_table(void)
 	if (!table_len)
 		return -EINVAL;
 
-	table = kzalloc(sizeof(struct cpufreq_frequency_table)
-			* table_len, GFP_KERNEL);
+	table = kcalloc(table_len, sizeof(struct cpufreq_frequency_table),
+			GFP_KERNEL);
 	if (!table) {
 		ret = -ENOMEM;
 		goto exit;
@@ -2327,8 +2330,8 @@ static int create_sensor_zone_id_map(void)
 	int i = 0;
 	int zone_id = -1;
 
-	zone_id_tsens_map = devm_kzalloc(&msm_thermal_info.pdev->dev,
-		sizeof(int) * max_tsens_num, GFP_KERNEL);
+	zone_id_tsens_map = devm_kcalloc(&msm_thermal_info.pdev->dev,
+		max_tsens_num, sizeof(int), GFP_KERNEL);
 
 	if (!zone_id_tsens_map) {
 		pr_err("Cannot allocate memory for zone_id_tsens_map\n");
@@ -2361,8 +2364,8 @@ static int create_sensor_id_map(struct device *dev)
 	int i = 0;
 	int ret = 0;
 
-	tsens_id_map = devm_kzalloc(dev,
-		sizeof(int) * max_tsens_num, GFP_KERNEL);
+	tsens_id_map = devm_kcalloc(dev,
+		max_tsens_num, sizeof(int), GFP_KERNEL);
 
 	if (!tsens_id_map) {
 		pr_err("Cannot allocate memory for tsens_id_map\n");
@@ -4488,8 +4491,9 @@ int sensor_mgr_init_threshold(struct threshold_info *thresh_inp,
 	thresh_inp->thresh_ct = (sensor_id == MONITOR_ALL_TSENS) ?
 						max_tsens_num : 1;
 	thresh_inp->thresh_triggered = false;
-	thresh_inp->thresh_list = kzalloc(sizeof(struct therm_threshold) *
-					thresh_inp->thresh_ct, GFP_KERNEL);
+	thresh_inp->thresh_list = kcalloc(thresh_inp->thresh_ct,
+					  sizeof(struct therm_threshold),
+					  GFP_KERNEL);
 	if (!thresh_inp->thresh_list) {
 		pr_err("kzalloc failed for thresh\n");
 		ret = -ENOMEM;
@@ -4597,7 +4601,8 @@ static int msm_thermal_add_gfx_nodes(void)
 		goto gfx_node_exit;
 	}
 
-	gfx_attr_gp.attrs = kzalloc(sizeof(struct attribute *) * 2, GFP_KERNEL);
+	gfx_attr_gp.attrs = kcalloc(2, sizeof(struct attribute *),
+				    GFP_KERNEL);
 	if (!gfx_attr_gp.attrs) {
 		pr_err("kzalloc failed\n");
 		ret = -ENOMEM;
@@ -4646,7 +4651,7 @@ static int msm_thermal_add_cx_nodes(void)
 		goto cx_node_exit;
 	}
 
-	cx_attr_gp.attrs = kzalloc(sizeof(struct attribute *) * 2, GFP_KERNEL);
+	cx_attr_gp.attrs = kcalloc(2, sizeof(struct attribute *), GFP_KERNEL);
 	if (!cx_attr_gp.attrs) {
 		pr_err("kzalloc failed\n");
 		ret = -ENOMEM;
@@ -4954,7 +4959,7 @@ static __init int msm_thermal_add_mx_nodes(void)
 		goto done_mx_nodes;
 	}
 
-	mx_attr_group.attrs = kzalloc(sizeof(struct attribute *) * 2,
+	mx_attr_group.attrs = kcalloc(2, sizeof(struct attribute *),
 					GFP_KERNEL);
 	if (!mx_attr_group.attrs) {
 		ret = -ENOMEM;
@@ -4984,8 +4989,8 @@ static void msm_thermal_panic_notifier_init(struct device *dev)
 {
 	int i;
 
-	tsens_temp_at_panic = devm_kzalloc(dev,
-				sizeof(long) * max_tsens_num,
+	tsens_temp_at_panic = devm_kcalloc(dev,
+				max_tsens_num, sizeof(long),
 				GFP_KERNEL);
 	if (!tsens_temp_at_panic) {
 		pr_err("kzalloc failed\n");
@@ -5021,9 +5026,9 @@ int msm_thermal_pre_init(struct device *dev)
 	}
 
 	if (!thresh) {
-		thresh = kzalloc(
-				sizeof(struct threshold_info) * MSM_LIST_MAX_NR,
-				GFP_KERNEL);
+		thresh = kcalloc(MSM_LIST_MAX_NR,
+				 sizeof(struct threshold_info),
+				 GFP_KERNEL);
 		if (!thresh) {
 			pr_err("kzalloc failed\n");
 			ret = -ENOMEM;
@@ -5032,9 +5037,10 @@ int msm_thermal_pre_init(struct device *dev)
 		memset(thresh, 0, sizeof(struct threshold_info) *
 			MSM_LIST_MAX_NR);
 	}
-	mit_config = devm_kzalloc(dev,
-			sizeof(struct msm_thermal_debugfs_thresh_config)
-			* (MSM_LIST_MAX_NR + MAX_CPU_CONFIG), GFP_KERNEL);
+	mit_config = devm_kcalloc(dev,
+			MSM_LIST_MAX_NR + MAX_CPU_CONFIG,
+			sizeof(struct msm_thermal_debugfs_thresh_config),
+			GFP_KERNEL);
 	if (!mit_config) {
 		pr_err("kzalloc failed\n");
 		ret = -ENOMEM;
@@ -5436,8 +5442,9 @@ static int msm_thermal_add_vdd_rstr_nodes(void)
 			goto thermal_sysfs_add_exit;
 		}
 
-		rails[i].attr_gp.attrs = kzalloc(sizeof(struct attribute *) * 3,
-					GFP_KERNEL);
+		rails[i].attr_gp.attrs = kcalloc(3,
+						 sizeof(struct attribute *),
+						 GFP_KERNEL);
 		if (!rails[i].attr_gp.attrs) {
 			pr_err("kzalloc failed\n");
 			rc = -ENOMEM;
@@ -5510,8 +5517,9 @@ static int msm_thermal_add_ocr_nodes(void)
 			rc = -ENOMEM;
 			goto ocr_node_exit;
 		}
-		ocr_rails[i].attr_gp.attrs = kzalloc(
-				sizeof(struct attribute *) * 2, GFP_KERNEL);
+		ocr_rails[i].attr_gp.attrs = kcalloc(2,
+						     sizeof(struct attribute *),
+						     GFP_KERNEL);
 		if (!ocr_rails[i].attr_gp.attrs) {
 			pr_err("Fail to allocate memory for attribute for %s\n",
 				ocr_rails[i].name);
@@ -5583,8 +5591,9 @@ static int msm_thermal_add_psm_nodes(void)
 			rc = -ENOMEM;
 			goto psm_node_exit;
 		}
-		psm_rails[i].attr_gp.attrs = kzalloc( \
-				sizeof(struct attribute *) * 2, GFP_KERNEL);
+		psm_rails[i].attr_gp.attrs = kcalloc(2,
+						     sizeof(struct attribute *),
+						     GFP_KERNEL);
 		if (!psm_rails[i].attr_gp.attrs) {
 			pr_err("kzalloc failed\n");
 			rc = -ENOMEM;
@@ -5901,7 +5910,7 @@ static int probe_vdd_rstr(struct device_node *node,
 		return -EFAULT;
 	}
 
-	rails = kzalloc(sizeof(struct rail) * rails_cnt,
+	rails = kcalloc(rails_cnt, sizeof(struct rail),
 				GFP_KERNEL);
 	if (!rails) {
 		pr_err("Fail to allocate memory for rails.\n");
@@ -6153,8 +6162,8 @@ static void probe_sensor_info(struct device_node *node,
 		goto read_node_fail;
 	}
 
-	sensors = devm_kzalloc(&pdev->dev,
-			sizeof(struct msm_sensor_info) * sensor_cnt,
+	sensors = devm_kcalloc(&pdev->dev,
+			sensor_cnt, sizeof(struct msm_sensor_info),
 			GFP_KERNEL);
 	if (!sensors) {
 		pr_err("Fail to allocate memory for sensor_info.\n");
@@ -6247,8 +6256,8 @@ static int probe_ocr(struct device_node *node, struct msm_thermal_data *data,
 		pr_err("Invalid ocr rail count. err:%d\n", ocr_rail_cnt);
 		goto read_ocr_fail;
 	}
-	ocr_rails = kzalloc(sizeof(struct psm_rail) * ocr_rail_cnt,
-			GFP_KERNEL);
+	ocr_rails = kcalloc(ocr_rail_cnt, sizeof(struct psm_rail),
+			    GFP_KERNEL);
 	if (!ocr_rails) {
 		pr_err("Fail to allocate memory for ocr rails\n");
 		ocr_rail_cnt = 0;
@@ -6361,8 +6370,8 @@ static int probe_psm(struct device_node *node, struct msm_thermal_data *data,
 
 	key = "qcom,pmic-sw-mode-regs";
 	psm_rails_cnt = of_property_count_strings(node, key);
-	psm_rails = kzalloc(sizeof(struct psm_rail) * psm_rails_cnt,
-			GFP_KERNEL);
+	psm_rails = kcalloc(psm_rails_cnt, sizeof(struct psm_rail),
+			    GFP_KERNEL);
 	if (!psm_rails) {
 		pr_err("Fail to allocate memory for psm rails\n");
 		psm_rails_cnt = 0;

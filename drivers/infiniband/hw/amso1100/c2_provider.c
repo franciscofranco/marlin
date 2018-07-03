@@ -367,7 +367,7 @@ static struct ib_mr *c2_reg_phys_mr(struct ib_pd *ib_pd,
 				   (1 << page_shift)) >> page_shift;
 	}
 
-	page_list = vmalloc(sizeof(u64) * pbl_depth);
+	page_list = vmalloc(array_size(pbl_depth, sizeof(u64)));
 	if (!page_list) {
 		pr_debug("couldn't vmalloc page_list of size %zd\n",
 			(sizeof(u64) * pbl_depth));
@@ -454,7 +454,7 @@ static struct ib_mr *c2_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
 	shift = ffs(c2mr->umem->page_size) - 1;
 	n = c2mr->umem->nmap;
 
-	pages = kmalloc(n * sizeof(u64), GFP_KERNEL);
+	pages = kmalloc_array(n, sizeof(u64), GFP_KERNEL);
 	if (!pages) {
 		err = -ENOMEM;
 		goto err;

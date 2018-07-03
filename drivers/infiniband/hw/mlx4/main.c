@@ -1985,7 +1985,7 @@ static void mlx4_ib_alloc_eqs(struct mlx4_dev *dev, struct mlx4_ib_dev *ibdev)
 
 	total_eqs = dev->caps.num_comp_vectors + added_eqs;
 
-	ibdev->eq_table = kzalloc(total_eqs * sizeof(int), GFP_KERNEL);
+	ibdev->eq_table = kcalloc(total_eqs, sizeof(int), GFP_KERNEL);
 	if (!ibdev->eq_table)
 		return;
 
@@ -2233,9 +2233,9 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
 			goto err_counter;
 
 		ibdev->ib_uc_qpns_bitmap =
-			kmalloc(BITS_TO_LONGS(ibdev->steer_qpn_count) *
-				sizeof(long),
-				GFP_KERNEL);
+			kmalloc_array(BITS_TO_LONGS(ibdev->steer_qpn_count),
+				      sizeof(long),
+				      GFP_KERNEL);
 		if (!ibdev->ib_uc_qpns_bitmap) {
 			dev_err(&dev->pdev->dev, "bit map alloc failed\n");
 			goto err_steer_qp_release;
