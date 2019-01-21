@@ -23,6 +23,8 @@ extern struct target_nrg schedtune_target_nrg;
 
 #ifdef CONFIG_DYNAMIC_STUNE_BOOST
 #define DYNAMIC_BOOST_SLOTS_COUNT 5
+extern bool stune_boost_active;
+extern unsigned short dynamic_stune_boost;
 static DEFINE_MUTEX(boost_slot_mutex);
 static DEFINE_MUTEX(stune_boost_mutex);
 static struct schedtune *getSchedtune(char *st_name);
@@ -641,6 +643,13 @@ boost_write(struct cgroup_subsys_state *css, struct cftype *cft,
 
 	if (boost < -100 || boost > 100)
 		return -EINVAL;
+
+#ifdef CONFIG_DYNAMIC_STUNE_BOOST
+	if (dynamic_stune_boost)
+		if (!strncmp(current->comm, "perfd", 5))
+			boost = stune_boost_active ? dynamic_stune_boost : 0;
+#endif
+
 	boost_pct = boost;
 
 	/*
