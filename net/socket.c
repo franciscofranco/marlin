@@ -620,10 +620,11 @@ static void __sock_release(struct socket *sock, struct inode *inode)
 		struct module *owner = sock->ops->owner;
 
 		if (inode)
-			inode_lock(inode);
+			mutex_lock(&inode->i_mutex);
 		sock->ops->release(sock);
+		sock->sk = NULL;
 		if (inode)
-			inode_unlock(inode);
+			mutex_unlock(&inode->i_mutex);
 		sock->ops = NULL;
 		module_put(owner);
 	}

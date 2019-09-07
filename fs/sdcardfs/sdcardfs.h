@@ -30,6 +30,7 @@
 #include <linux/file.h>
 #include <linux/fs.h>
 #include <linux/aio.h>
+#include <linux/kref.h>
 #include <linux/mm.h>
 #include <linux/mount.h>
 #include <linux/namei.h>
@@ -196,7 +197,9 @@ struct sdcardfs_mount_options {
 	bool multiuser;
 	bool gid_derivation;
 	bool default_normal;
+	bool unshared_obb;
 	unsigned int reserved_mb;
+	bool nocache;
 };
 
 struct sdcardfs_vfsmount_options {
@@ -488,7 +491,6 @@ extern appid_t get_appid(const char *app_name);
 extern appid_t get_ext_gid(const char *app_name);
 extern appid_t is_excluded(const char *app_name, userid_t userid);
 extern int check_caller_access_to_name(struct inode *parent_node, const struct qstr *name);
-extern int open_flags_to_access_mode(int open_flags);
 extern int packagelist_init(void);
 extern void packagelist_exit(void);
 

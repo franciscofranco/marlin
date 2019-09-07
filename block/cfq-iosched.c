@@ -3799,7 +3799,8 @@ cfq_should_preempt(struct cfq_data *cfqd, struct cfq_queue *new_cfqq,
 	 * if the new request is sync, but the currently running queue is
 	 * not, let the sync request have priority.
 	 */
-	if (rq_is_sync(rq) && !cfq_cfqq_sync(cfqq) && !cfq_cfqq_must_dispatch(cfqq))
+	if (rq_is_sync(rq) && !cfq_cfqq_sync(cfqq) &&
+	    !cfq_cfqq_must_dispatch(cfqq))
 		return true;
 
 	/*
